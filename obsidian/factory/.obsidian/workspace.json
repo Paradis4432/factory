@@ -1,0 +1,174 @@
+{
+  "main": {
+    "id": "66310b152c7ce7c7",
+    "type": "split",
+    "children": [
+      {
+        "id": "80b7a1d23d9b6c74",
+        "type": "tabs",
+        "dimension": 78.51812366737741,
+        "children": [
+          {
+            "id": "a7cdbb35c7eee11f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "sqlDatabase.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "c304a7edefc7db70",
+        "type": "tabs",
+        "dimension": 21.4818763326226,
+        "children": [
+          {
+            "id": "0111eda0a47490cc",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "sqlDatabase.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ba532d9db2bc6ae4",
+    "type": "split",
+    "children": [
+      {
+        "id": "b1c659bfa6840127",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1ad2be023b466f79",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "d360e683cca7b1e9",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "330041819d044add",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "b428eca9bacc2aa6",
+    "type": "split",
+    "children": [
+      {
+        "id": "fcd78fa71c713e83",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "df2e2a601f1d2d37",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "sqlDatabase.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "cb6d2bc552659608",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "sqlDatabase.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "f02b815d087ed70d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "84aa1d9726f3f758",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "sqlDatabase.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "1ad2be023b466f79",
+  "lastOpenFiles": [
+    "main factory.canvas",
+    "sqlDatabase.md"
+  ]
+}
