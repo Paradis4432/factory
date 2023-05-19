@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class OnHopperPlace implements Listener {
 
@@ -24,22 +25,41 @@ public class OnHopperPlace implements Listener {
         if (!e.getItemInHand().getItemMeta().getDisplayName().equals("factory hopper")) return;
 
         Block against = e.getBlockAgainst();
-        if (!(against.getType() == Material.WHITE_WOOL)) return;
+        //if (!(against.getType() == Material.WHITE_WOOL)) return;
 
         Location loc = e.getBlockAgainst().getLocation();
         System.out.println("saving hopper");
         Hoppers hopper = new Hoppers(e.getBlock().getLocation());
         // replace with isFactoryBlock
-        if (isBelt(loc)){
+        if (isBelt(loc) && against.getType() == Material.WHITE_WOOL){
             System.out.println("is belt");
             // save new hopper in database
             // check id of target block before saving
-            hopper.setTarget(against.getLocation(), getID(loc), "BELT")
-                    .setLineID(getLineID(loc))
-                    .save();
+            try {
+                hopper.setTarget(against.getLocation(), getID(loc), "BELT")
+                        .setLineID(getLineID(loc))
+                        .save(e.getPlayer());
+                //e.getPlayer().sendMessage("new hopper saved with given target");
+
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                e.getPlayer().sendMessage("error saving hopper");
+            }
         } else {
-            // save new hopper in database with no target
-            hopper.save();
+            System.out.println("is not belt");
+            // save new hopper in database
+            // check id of target block before saving
+            try {
+                hopper.setLineID(getLineID(loc))
+                        .save(e.getPlayer());
+                e.getPlayer().sendMessage("new hopper saved wit no target");
+
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                e.getPlayer().sendMessage("error saving hopper");
+            }
         }
     }
 

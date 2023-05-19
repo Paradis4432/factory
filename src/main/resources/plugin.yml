@@ -1,4 +1,8 @@
 name: factory
 version: '${project.version}'
 main: me.paradis.factory.Factory
-api-version: 1.18
+api-version: 1.19
+author: Paradis
+prefix: Factory
+
+

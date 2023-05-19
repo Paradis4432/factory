@@ -5,7 +5,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class SQLManager {
+import org.bukkit.Bukkit;
+
+import me.paradis.factory.Factory;
+import me.paradis.factory.tools.Logging;
+
+public class SQLManager implements HopperSqlManager{
     private Connection conn;
     private String url;
 
@@ -16,7 +21,7 @@ public class SQLManager {
 
     public void setup() throws Exception {
         conn = DriverManager.getConnection(url);
-        System.out.println("Connected to the database!");
+        Logging.Info("connected to database");
 
 
         Statement statement = getConnection().createStatement();
@@ -26,33 +31,9 @@ public class SQLManager {
                 ");";
         statement.execute(createLinesTable);
 
-        String createHoppersTable = "CREATE TABLE IF NOT EXISTS hoppers (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "target_x INTEGER," +
-                "target_y INTEGER," +
-                "target_z INTEGER," +
-                "target_world VARCHAR," +
-                "target_id INTEGER," +
-                "target_name VARCHAR," +
-                "location_x INTEGER NOT NULL," +
-                "location_y INTEGER NOT NULL," +
-                "location_z INTEGER NOT NULL," +
-                "location_world TEXT NOT NULL," +
-                "enabled INTEGER NOT NULL," +
-                "line_id INTEGER," +
-                "FOREIGN KEY(line_id) REFERENCES lines(id)" +
-                ");";
         statement.execute(createHoppersTable);
 
         statement.close();
-    }
-
-    /*
-    *  This method will save a new hopper in the database
-    * @return true if the hopper was saved successfully
-     */
-    public boolean saveNewHopper(){
-        return true;
     }
 
     public Connection getConnection() throws SQLException {

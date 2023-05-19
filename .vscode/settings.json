@@ -1,0 +1,13 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "files.exclude": {
+        ".idea/": true,
+        "obsidian/": true,
+        ".obsidian/": true,
+        ".vscode/": true,
+        "kitpvp98/": true,
+        "target/": true,
+        "Kitpvp98.iml": true,
+        "LICENSE": true,
+    }
+}
