@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Hopper;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.paradis.factory.Factory;
 
@@ -77,7 +78,6 @@ public interface HopperSqlManager {
 
                     pstmt.executeUpdate();
 
-
                 }
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
@@ -88,53 +88,59 @@ public interface HopperSqlManager {
         return true;
     }
 
-    public default List<Location> getAllTargetedHoppersLocations() throws SQLException {
-        String query = "SELECT * FROM hoppers WHERE target_x IS NOT NULL AND target_y IS NOT NULL AND target_z IS NOT NULL;";
-        try (PreparedStatement pstmt = getConnection().prepareStatement(query);
-                ResultSet rs = pstmt.executeQuery()) {
-            List<Location> hoppers = new ArrayList<>();
-            while (rs.next()) {
-                String worldName = rs.getString("location_world");
-                int locationX = rs.getInt("location_x");
-                int locationY = rs.getInt("location_y");
-                int locationZ = rs.getInt("location_z");
-                Location loc = new Location(null, locationX, locationY, locationZ);
-                hoppers.add(loc);
-            }
-            return hoppers;
-        }
-    }
-
-    public default void updateAllTargetedHoppers() {
+    public default void getAllTargetedHoppersLocationsAsync(LocationCallback callback) {
         Bukkit.getScheduler().runTaskAsynchronously(Factory.getInstance(), () -> {
-            List<Location> locations = null;
             try {
-                locations = getAllTargetedHoppersLocations();
+                String query = "SELECT * FROM hoppers WHERE target_x IS NOT NULL AND target_y IS NOT NULL AND target_z IS NOT NULL;";
+                try (PreparedStatement pstmt = getConnection().prepareStatement(query);
+                        ResultSet rs = pstmt.executeQuery()) {
+                    List<Location> hoppers = new ArrayList<>();
+                    while (rs.next()) {
+                        String worldName = rs.getString("location_world");
+                        int locationX = rs.getInt("location_x");
+                        int locationY = rs.getInt("location_y");
+                        int locationZ = rs.getInt("location_z");
+                        Location loc = new Location(null, locationX, locationY, locationZ);
+                        hoppers.add(loc);
+                    }
+                    callback.onLocationsReceived(hoppers);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            if (locations == null)
-                return;
-            for (Location loc : locations) {
-                loc.setWorld(Factory.getInstance().getServer().getWorld("world"));
-                System.out.println(loc);
-
-                // the location should be a hopper, get the inventory of this and print the
-                // content
-
-                try {
-                    Block block = loc.getBlock();
-                    if (!(block.getState() instanceof Hopper))
-                        continue;
-                    Hopper hopper = (Hopper) block.getState();
-                    System.out.println(hopper.getInventory().getContents());
-                } catch (Exception e) {
-                    System.out.println("error");
-                    //e.printStackTrace();
-                }
-            }
-
         });
     }
 
+    public interface LocationCallback {
+        void onLocationsReceived(List<Location> locations);
+    }
+
+    public default void updateAllTargetedHoppers() {
+        getAllTargetedHoppersLocationsAsync(locations -> {
+            Bukkit.getScheduler().runTask(Factory.getInstance(), () -> {
+                for (Location loc : locations) {
+                    loc.setWorld(Factory.getInstance().getServer().getWorld("world"));
+                    System.out.println(loc);
+    
+                    // the location should be a hopper, get the inventory of this and print the
+                    // content
+    
+                    try {
+                        Block block = loc.getBlock();
+                        if (!(block.getState() instanceof Hopper))
+                            continue;
+                        Hopper hopper = (Hopper) block.getState();
+                        for(ItemStack item : hopper.getInventory().getContents()) {
+                            if(item != null) {
+                                System.out.println(item.getType());
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("error");
+                        e.printStackTrace();
+                    }
+                }
+            });
+        });
+    }
 }
