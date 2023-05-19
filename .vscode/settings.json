@@ -9,5 +9,6 @@
         "target/": true,
         "Kitpvp98.iml": true,
         "LICENSE": true,
-    }
+    },
+    "java.compile.nullAnalysis.mode": "automatic"
 }

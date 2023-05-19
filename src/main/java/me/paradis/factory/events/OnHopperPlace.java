@@ -33,33 +33,17 @@ public class OnHopperPlace implements Listener {
         // replace with isFactoryBlock
         if (isBelt(loc) && against.getType() == Material.WHITE_WOOL){
             System.out.println("is belt");
-            // save new hopper in database
-            // check id of target block before saving
-            try {
-                hopper.setTarget(against.getLocation(), getID(loc), "BELT")
-                        .setLineID(getLineID(loc))
-                        .save(e.getPlayer());
-                //e.getPlayer().sendMessage("new hopper saved with given target");
+            
+            hopper.setTarget(against.getLocation(), getID(loc), "BELT")
+                    .setLineID(getLineID(loc))
+                    .save();
 
-            } catch (SQLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                e.getPlayer().sendMessage("error saving hopper");
-            }
+            e.getPlayer().sendMessage("saving hopper with given target");
         } else {
             System.out.println("is not belt");
-            // save new hopper in database
-            // check id of target block before saving
-            try {
-                hopper.setLineID(getLineID(loc))
-                        .save(e.getPlayer());
-                e.getPlayer().sendMessage("new hopper saved wit no target");
-
-            } catch (SQLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                e.getPlayer().sendMessage("error saving hopper");
-            }
+            hopper.setLineID(getLineID(loc))
+                    .save();
+            e.getPlayer().sendMessage("saving hopper with no target");
         }
     }
 
