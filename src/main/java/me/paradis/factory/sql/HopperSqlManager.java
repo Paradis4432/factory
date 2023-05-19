@@ -7,9 +7,12 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.Hopper;
 import org.bukkit.entity.Player;
 
 import me.paradis.factory.Factory;
@@ -40,43 +43,44 @@ public interface HopperSqlManager {
      * 
      * @return true if the hopper was saved successfully
      */
-    public default boolean saveNewHopper(Hoppers hopper, Player player) {
-
+    public default boolean saveNewHopper(Hoppers hopper) {
         Bukkit.getScheduler().runTaskAsynchronously(Factory.getInstance(), () -> {
+            String saveQuery = "INSERT INTO hoppers (target_x, target_y, target_z, target_world, target_id," +
+                    " target_name, location_x, location_y, location_z, location_world, enabled, line_id)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
             try {
-                String saveQuery = "INSERT INTO hoppers (target_x, target_y, target_z, target_world, target_id," +
-                        " target_name, location_x, location_y, location_z, location_world, enabled, line_id)" +
-                        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                System.out.println("conn: " + getConnection());
 
-                PreparedStatement pstmt = getConnection().prepareStatement(saveQuery);
+                try (PreparedStatement pstmt = getConnection().prepareStatement(saveQuery)) {
+                    // Check if target_loc is null and handle accordingly
+                    if (hopper.target_loc == null) {
+                        pstmt.setNull(1, Types.INTEGER);
+                        pstmt.setNull(2, Types.INTEGER);
+                        pstmt.setNull(3, Types.INTEGER);
+                        pstmt.setNull(4, Types.VARCHAR);
+                    } else {
+                        pstmt.setInt(1, hopper.target_loc.getBlockX());
+                        pstmt.setInt(2, hopper.target_loc.getBlockY());
+                        pstmt.setInt(3, hopper.target_loc.getBlockZ());
+                        pstmt.setString(4, hopper.target_loc.getWorld().getName());
+                    }
 
-                // Check if target_loc is null and handle accordingly
-                if (hopper.target_loc == null) {
-                    pstmt.setNull(1, Types.INTEGER);
-                    pstmt.setNull(2, Types.INTEGER);
-                    pstmt.setNull(3, Types.INTEGER);
-                    pstmt.setNull(4, Types.VARCHAR);
-                } else {
-                    pstmt.setInt(1, hopper.target_loc.getBlockX());
-                    pstmt.setInt(2, hopper.target_loc.getBlockY());
-                    pstmt.setInt(3, hopper.target_loc.getBlockZ());
-                    pstmt.setString(4, hopper.target_loc.getWorld().getName());
+                    pstmt.setInt(5, hopper.target_id);
+                    pstmt.setString(6, hopper.target_name);
+                    pstmt.setInt(7, hopper.loc.getBlockX());
+                    pstmt.setInt(8, hopper.loc.getBlockY());
+                    pstmt.setInt(9, hopper.loc.getBlockZ());
+                    pstmt.setString(10, hopper.loc.getWorld().getName());
+                    pstmt.setInt(11, 1);
+                    pstmt.setInt(12, hopper.lineID);
+
+                    pstmt.executeUpdate();
+
+
                 }
-
-                pstmt.setInt(5, hopper.target_id);
-                pstmt.setString(6, hopper.target_name);
-                pstmt.setInt(7, hopper.loc.getBlockX());
-                pstmt.setInt(8, hopper.loc.getBlockY());
-                pstmt.setInt(9, hopper.loc.getBlockZ());
-                pstmt.setString(10, hopper.loc.getWorld().getName());
-                pstmt.setInt(11, 1);
-                pstmt.setInt(12, hopper.lineID);
-
-                pstmt.executeUpdate();
-                pstmt.close();
-
-                player.sendMessage("hopper saved with target");
-            } catch (Exception e) {
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         });
@@ -86,38 +90,51 @@ public interface HopperSqlManager {
 
     public default List<Location> getAllTargetedHoppersLocations() throws SQLException {
         String query = "SELECT * FROM hoppers WHERE target_x IS NOT NULL AND target_y IS NOT NULL AND target_z IS NOT NULL;";
-        PreparedStatement pstmt = getConnection().prepareStatement(query);
-
-        ResultSet rs = pstmt.executeQuery();
-        List<Location> hoppers = new ArrayList<>();
-        while (rs.next()) {
-            System.out.println("adding hopper to list values: " + rs.getString("target_world") + " "
-                    + rs.getInt("target_x") + " " + rs.getInt("target_y") + " " + rs.getInt("target_z"));
-            Location loc = new Location(
-                    null,
-                    rs.getInt("location_x"), rs.getInt("location_y"), rs.getInt("location_z"));
-
-            hoppers.add(loc);
+        try (PreparedStatement pstmt = getConnection().prepareStatement(query);
+                ResultSet rs = pstmt.executeQuery()) {
+            List<Location> hoppers = new ArrayList<>();
+            while (rs.next()) {
+                String worldName = rs.getString("location_world");
+                int locationX = rs.getInt("location_x");
+                int locationY = rs.getInt("location_y");
+                int locationZ = rs.getInt("location_z");
+                Location loc = new Location(null, locationX, locationY, locationZ);
+                hoppers.add(loc);
+            }
+            return hoppers;
         }
-
-        pstmt.close();
-
-        return hoppers;
     }
 
-    public default void getAllTargetedHoppersLocationsAsync(LocationCallback callback) {
+    public default void updateAllTargetedHoppers() {
         Bukkit.getScheduler().runTaskAsynchronously(Factory.getInstance(), () -> {
+            List<Location> locations = null;
             try {
-                List<Location> locations = getAllTargetedHoppersLocations();
-                callback.onLocationsReceived(locations);
+                locations = getAllTargetedHoppersLocations();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        });
-    }
+            if (locations == null)
+                return;
+            for (Location loc : locations) {
+                loc.setWorld(Factory.getInstance().getServer().getWorld("world"));
+                System.out.println(loc);
 
-    public interface LocationCallback {
-        void onLocationsReceived(List<Location> locations);
+                // the location should be a hopper, get the inventory of this and print the
+                // content
+
+                try {
+                    Block block = loc.getBlock();
+                    if (!(block.getState() instanceof Hopper))
+                        continue;
+                    Hopper hopper = (Hopper) block.getState();
+                    System.out.println(hopper.getInventory().getContents());
+                } catch (Exception e) {
+                    System.out.println("error");
+                    //e.printStackTrace();
+                }
+            }
+
+        });
     }
 
 }

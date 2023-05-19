@@ -2,6 +2,7 @@ package me.paradis.factory;
 
 import me.paradis.factory.events.OnHopperPlace;
 import me.paradis.factory.sql.HopperSqlManager.LocationCallback;
+import me.paradis.factory.sql.HopperSqlManager;
 import me.paradis.factory.sql.Hoppers;
 import me.paradis.factory.sql.SQLManager;
 import org.bukkit.Bukkit;
@@ -18,14 +19,13 @@ public final class Factory extends JavaPlugin {
     private static Factory instance;
     public static final String version = "1.0";
 
-
     @Override
     public void onEnable() {
         // Plugin startup logic
         instance = this;
         System.out.println("Factory plugin is enabled");
 
-        try{
+        try {
             sqlManager = new SQLManager("jdbc:sqlite:factory.db");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -34,7 +34,7 @@ public final class Factory extends JavaPlugin {
         // register new event
         Bukkit.getPluginManager().registerEvents(new OnHopperPlace(), this);
 
-        System.out.println("starting loop");
+        startLoops();
     }
 
     public static SQLManager getSqlManager() {
@@ -50,18 +50,11 @@ public final class Factory extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    private void startLoops(){
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("looping");
-                sqlManager.getAllTargetedHoppersLocationsAsync(new LocationCallback() {
-                    @Override
-                    public void onLocationsReceived(List<Location> locs) {
-                        System.out.println(locs);
-                    }
-                });
-            }
-        }, 20,20);
+    private void startLoops() {
+        System.out.println("starting loop");
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            //doesnt acctually get them
+            sqlManager.updateAllTargetedHoppers();
+        }, 0, 20);
     }
 }
