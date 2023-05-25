@@ -12,11 +12,14 @@
             "id": "a7cdbb35c7eee11f",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "sqlDatabase.md",
-                "mode": "source",
-                "source": false
+                "file": "main factory.canvas",
+                "viewState": {
+                  "x": 6251.429531722806,
+                  "y": -184.08067365018698,
+                  "zoom": -0.3333333333333334
+                }
               }
             }
           }
@@ -85,11 +88,13 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "b428eca9bacc2aa6",
@@ -105,7 +110,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "sqlDatabase.md",
+                "file": "main factory.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -122,7 +127,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "sqlDatabase.md",
+                "file": "main factory.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -145,7 +150,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "sqlDatabase.md"
+                "file": "main factory.canvas"
               }
             }
           }
@@ -166,9 +171,9 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1ad2be023b466f79",
+  "active": "a7cdbb35c7eee11f",
   "lastOpenFiles": [
-    "main factory.canvas",
-    "sqlDatabase.md"
+    "sqlDatabase.md",
+    "main factory.canvas"
   ]
 }
