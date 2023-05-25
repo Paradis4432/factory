@@ -1,0 +1,4 @@
+name: factory
+version: '${project.version}'
+main: me.paradis.factory.Factory
+api-version: 1.18
