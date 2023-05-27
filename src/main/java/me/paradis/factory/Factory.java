@@ -1,5 +1,6 @@
 package me.paradis.factory;
 
+import me.paradis.factory.commands.FactoryCommand;
 import me.paradis.factory.events.OnHopperPlace;
 import me.paradis.factory.sql.HopperSqlManager.LocationCallback;
 import me.paradis.factory.sql.HopperSqlManager;
@@ -8,6 +9,8 @@ import me.paradis.factory.sql.SQLManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import co.aikar.commands.PaperCommandManager;
 import sun.security.util.Debug;
 
 import java.sql.SQLException;
@@ -33,6 +36,11 @@ public final class Factory extends JavaPlugin {
 
         // register new event
         Bukkit.getPluginManager().registerEvents(new OnHopperPlace(), this);
+
+        // register commands
+        PaperCommandManager manager = new PaperCommandManager(this);    
+        manager.enableUnstableAPI("help");  
+        manager.registerCommand(new FactoryCommand());
 
         startLoops();
     }

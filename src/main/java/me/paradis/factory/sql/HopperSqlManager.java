@@ -51,8 +51,6 @@ public interface HopperSqlManager {
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
             try {
-                System.out.println("conn: " + getConnection());
-
                 try (PreparedStatement pstmt = getConnection().prepareStatement(saveQuery)) {
                     // Check if target_loc is null and handle accordingly
                     if (hopper.target_loc == null) {
@@ -80,7 +78,6 @@ public interface HopperSqlManager {
 
                 }
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         });
@@ -88,6 +85,8 @@ public interface HopperSqlManager {
         return true;
     }
 
+
+    // in the future this should be updated to use the async method 
     public default void getAllTargetedHoppersLocationsAsync(LocationCallback callback) {
         Bukkit.getScheduler().runTaskAsynchronously(Factory.getInstance(), () -> {
             try {

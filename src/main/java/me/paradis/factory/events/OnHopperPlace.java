@@ -15,6 +15,8 @@ import java.sql.SQLException;
 
 public class OnHopperPlace implements Listener {
 
+    
+
     SQLManager sqlManager = Factory.getSqlManager();
 
     @EventHandler

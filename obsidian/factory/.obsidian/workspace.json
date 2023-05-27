@@ -6,7 +6,7 @@
       {
         "id": "80b7a1d23d9b6c74",
         "type": "tabs",
-        "dimension": 78.51812366737741,
+        "dimension": 78.5181236673774,
         "children": [
           {
             "id": "a7cdbb35c7eee11f",
@@ -16,8 +16,8 @@
               "state": {
                 "file": "main factory.canvas",
                 "viewState": {
-                  "x": 6251.429531722806,
-                  "y": -184.08067365018698,
+                  "x": 3719.574269770162,
+                  "y": -230.3272785425308,
                   "zoom": -0.3333333333333334
                 }
               }
@@ -28,7 +28,7 @@
       {
         "id": "c304a7edefc7db70",
         "type": "tabs",
-        "dimension": 21.4818763326226,
+        "dimension": 21.481876332622598,
         "children": [
           {
             "id": "0111eda0a47490cc",
@@ -85,6 +85,14 @@
             "type": "leaf",
             "state": {
               "type": "starred",
+              "state": {}
+            }
+          },
+          {
+            "id": "929b9a8678fd4b0d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
               "state": {}
             }
           }
