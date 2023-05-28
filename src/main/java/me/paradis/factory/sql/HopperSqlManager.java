@@ -119,7 +119,6 @@ public interface HopperSqlManager {
             Bukkit.getScheduler().runTask(Factory.getInstance(), () -> {
                 for (Location loc : locations) {
                     loc.setWorld(Factory.getInstance().getServer().getWorld("world"));
-                    System.out.println(loc);
     
                     // the location should be a hopper, get the inventory of this and print the
                     // content
