@@ -1,42 +1,65 @@
 package me.paradis.factory.events;
 
-import me.paradis.factory.Factory;
-import me.paradis.factory.sql.Hoppers;
-import me.paradis.factory.sql.SQLManager;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Fence;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockMultiPlaceEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import me.paradis.factory.Factory;
+import me.paradis.factory.sql.Hoppers;
+import me.paradis.factory.sql.SQLManager;
 
 public class OnHopperPlace implements Listener {
 
     SQLManager sqlManager = Factory.getSqlManager();
 
-    @EventHandler
-    public void test(BlockMultiPlaceEvent event) {
-        System.out.println("multi block placed");
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPlayerInteract(BlockPhysicsEvent event) {
+        Block block = event.getBlock();
+        System.out.println(event.getChangedBlockData());
+        System.out.println(event.getChangedType());
+        if (block.getType() == Material.COBBLESTONE_WALL || block.getType() == Material.MOSSY_COBBLESTONE_WALL) {
+            event.setCancelled(true);
+        }
     }
 
-    @EventHandler
+    public static void removeConnectionsFromAdjacentWalls(Block block) {
+        for (BlockFace face : BlockFace.values()) {
+            Block neighbor = block.getRelative(face);
+            if (neighbor.getType() == Material.COBBLESTONE_WALL
+                    || neighbor.getType() == Material.MOSSY_COBBLESTONE_WALL) {
+                removeConnection(neighbor, block);
+            }
+        }
+    }
+
+    private static void removeConnection(Block wallBlock, Block connectedBlock) {
+        BlockFace connectedFace = getConnectedFace(wallBlock, connectedBlock);
+        if (connectedFace != null) {
+            wallBlock.getRelative(connectedFace).setType(Material.AIR);
+        }
+    }
+
+    private static BlockFace getConnectedFace(Block wallBlock, Block connectedBlock) {
+        for (BlockFace face : BlockFace.values()) {
+            if (wallBlock.getRelative(face).equals(connectedBlock)) {
+                return face;
+            }
+        }
+        return null;
+    }
+
     public void onBlockPlace(BlockPlaceEvent event) {
         Block placedBlock = event.getBlock();
 
-
-
         if (placedBlock.getType() == Material.OAK_FENCE) {
-
 
             Bukkit.getScheduler().runTaskLater(Factory.getInstance(), new Runnable() {
                 @Override
